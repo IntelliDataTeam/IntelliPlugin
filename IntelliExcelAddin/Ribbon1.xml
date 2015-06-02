@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<customUI xmlns="http://schemas.microsoft.com/office/2009/07/customui" onLoad="Ribbon_Load">
+  <ribbon>
+    <tabs>
+      <tab idMso="TabAddIns" label="ToolBox" >
+        <group id="ContentGroup" label="Headers">
+          <menu id="header" label="Family Headers" imageMso="HappyFace" size="large">
+            <button id="CCA" label="CCA" imageMso="HappyFace" onAction="Headers" />
+            <button id="CCD" label="CCD" imageMso="HappyFace" onAction="Headers" />
+            <button id="CCR" label="CCR" imageMso="HappyFace" onAction="Headers" />
+            <button id="CCS" label="CCS" imageMso="HappyFace" onAction="Headers" />
+            <button id="CFR" label="CFR" imageMso="HappyFace" onAction="Headers" />
+            <button id="CFS" label="CFS" imageMso="HappyFace" onAction="Headers" />
+          </menu>
+          <button id="empcol" label="Delete Empty Col" imageMso="PictureBrightnessGallery" size="large" onAction ="EmpCol" />
+        </group>
+        <group id="Formulas" label="Formulas">
+          <menu id="vlookup" label="VLookup" imageMso="HappyFace" size="large">
+            <button id="base" label="Base" imageMso="HappyFace" onAction="Vlookup" />
+            <button id="universal" label="Universal" imageMso="HappyFace" onAction="Vlookup" />
+            <button id="series" label="Series" imageMso="HappyFace" onAction="Vlookup" />
+          </menu>
+        </group>
+        <group id="import" label="Import">
+          <button id="multi_import" label="Multi Import"
+               screentip="Table" onAction="ImportMulCSV"
+               supertip="Import Multiple CSV files."
+               size="large" imageMso="PictureBrightnessGallery" />
+        </group>
+        <group id="fun" label="Fun Stuffs">
+          <menu id="custompaste" label="Population/Pulldown" imageMso="HappyFace" size="large">
+            <button id="population" label="Population" imageMso="HappyFace"
+                  onAction="Population" screentip="This function import a list of PNs and apply formulas to them. Then output the values in text." />
+            <button id="pulldown" label="Pull Down" imageMso="PictureBrightnessGallery" onAction="PullDown" />
+          </menu>
+          <menu id="dataparse" label="Data Parsing" imageMso="HappyFace" size="large">
+            <button id="text2column" label="Text To Columns" imageMso="HappyFace"
+                  onAction="Text2Column" />
+            <button id="concatcells" label="Concat Cells" imageMso="HappyFace"
+                  screentip="Combine Multiple cells into one cell separated by line break." onAction="ConcatCells" />
+          </menu>
+          <button id="validator" label="Validator" imageMso="HappyFace" size="large"
+                  onAction="Validator" screentip="Import calculation results to a CSV file." />
+          <button id="comparevalues" label="Compare Values" imageMso="HappyFace" size="large"
+                  screentip="Does not work!." onAction="CompareValues" />
+          <button id="datachecking" label="Data Checking" imageMso="HappyFace" size="large"
+                  screentip="Does not work!." onAction="DataChecking" />
+        </group>
+      </tab>
+    </tabs>
+  </ribbon>
+</customUI>
+

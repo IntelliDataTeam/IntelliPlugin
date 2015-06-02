@@ -1,0 +1,15 @@
+C:\Users\Quang\documents\visual studio 2013\Projects\IntelliPlugin\IntelliPlugin\bin\Debug\IntelliPlugin.dll
+C:\Users\Quang\documents\visual studio 2013\Projects\IntelliPlugin\IntelliPlugin\bin\Debug\IntelliPlugin.pdb
+C:\Users\Quang\documents\visual studio 2013\Projects\IntelliPlugin\IntelliPlugin\bin\Debug\IntelliPlugin.xml
+C:\Users\Quang\documents\visual studio 2013\Projects\IntelliPlugin\IntelliPlugin\bin\Debug\IntelliPlugin.dll.manifest
+C:\Users\Quang\documents\visual studio 2013\Projects\IntelliPlugin\IntelliPlugin\bin\Debug\IntelliPlugin.vsto
+C:\Users\Quang\documents\visual studio 2013\Projects\IntelliPlugin\IntelliPlugin\bin\Debug\IntelliPlugin.xlsx
+C:\Users\Quang\documents\visual studio 2013\Projects\IntelliPlugin\IntelliPlugin\bin\Debug\Microsoft.Office.Tools.Common.v4.0.Utilities.dll
+C:\Users\Quang\documents\visual studio 2013\Projects\IntelliPlugin\IntelliPlugin\bin\Debug\Microsoft.Office.Tools.Excel.v4.0.Utilities.dll
+C:\Users\Quang\documents\visual studio 2013\Projects\IntelliPlugin\IntelliPlugin\bin\Debug\Microsoft.Office.Tools.Common.v4.0.Utilities.xml
+C:\Users\Quang\documents\visual studio 2013\Projects\IntelliPlugin\IntelliPlugin\bin\Debug\Microsoft.Office.Tools.Excel.v4.0.Utilities.xml
+C:\Users\Quang\documents\visual studio 2013\Projects\IntelliPlugin\IntelliPlugin\obj\Debug\IntelliPlugin.Resources.resources
+C:\Users\Quang\documents\visual studio 2013\Projects\IntelliPlugin\IntelliPlugin\obj\Debug\IntelliPlugin.vbproj.GenerateResource.Cache
+C:\Users\Quang\documents\visual studio 2013\Projects\IntelliPlugin\IntelliPlugin\obj\Debug\IntelliPlugin.dll
+C:\Users\Quang\documents\visual studio 2013\Projects\IntelliPlugin\IntelliPlugin\obj\Debug\IntelliPlugin.xml
+C:\Users\Quang\documents\visual studio 2013\Projects\IntelliPlugin\IntelliPlugin\obj\Debug\IntelliPlugin.pdb

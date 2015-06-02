@@ -1,0 +1,45 @@
+﻿<?xml version="1.0"?>
+<doc>
+<assembly>
+<name>
+IntelliExcelAddin
+</name>
+</assembly>
+<members>
+<member name="M:IntelliExcelAddin.ThisAddIn.#ctor(Microsoft.Office.Tools.Excel.ApplicationFactory,System.IServiceProvider)">
+</member><member name="M:IntelliExcelAddin.ThisAddIn.Initialize">
+</member><member name="M:IntelliExcelAddin.ThisAddIn.FinishInitialization">
+</member><member name="M:IntelliExcelAddin.ThisAddIn.InitializeDataBindings">
+</member><member name="M:IntelliExcelAddin.ThisAddIn.InitializeCachedData">
+</member><member name="M:IntelliExcelAddin.ThisAddIn.InitializeData">
+</member><member name="M:IntelliExcelAddin.ThisAddIn.BindToData">
+</member><member name="M:IntelliExcelAddin.ThisAddIn.StartCaching(System.String)">
+</member><member name="M:IntelliExcelAddin.ThisAddIn.StopCaching(System.String)">
+</member><member name="M:IntelliExcelAddin.ThisAddIn.IsCached(System.String)">
+</member><member name="M:IntelliExcelAddin.ThisAddIn.BeginInitialization">
+</member><member name="M:IntelliExcelAddin.ThisAddIn.EndInitialization">
+</member><member name="M:IntelliExcelAddin.ThisAddIn.InitializeControls">
+</member><member name="M:IntelliExcelAddin.ThisAddIn.InitializeComponents">
+</member><member name="M:IntelliExcelAddin.ThisAddIn.NeedsFill(System.String)">
+</member><member name="M:IntelliExcelAddin.ThisAddIn.OnShutdown">
+</member><member name="T:IntelliExcelAddin.ThisAddIn">
+</member><member name="M:IntelliExcelAddin.Globals.#ctor">
+</member><member name="T:IntelliExcelAddin.Globals">
+</member><member name="M:IntelliExcelAddin.ThisRibbonCollection.#ctor(Microsoft.Office.Tools.Ribbon.RibbonFactory)">
+</member><member name="T:IntelliExcelAddin.ThisRibbonCollection">
+</member><member name="P:IntelliExcelAddin.My.Resources.Resources.ResourceManager">
+	<summary>
+  Returns the cached ResourceManager instance used by this class.
+</summary>
+</member><member name="P:IntelliExcelAddin.My.Resources.Resources.Culture">
+	<summary>
+  Overrides the current thread's CurrentUICulture property for all
+  resource lookups using this strongly typed resource class.
+</summary>
+</member><member name="T:IntelliExcelAddin.My.Resources.Resources">
+	<summary>
+  A strongly-typed resource class, for looking up localized strings, etc.
+</summary>
+</member>
+</members>
+</doc>

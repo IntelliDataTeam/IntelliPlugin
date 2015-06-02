@@ -1,0 +1,61 @@
+﻿<?xml version="1.0"?>
+<doc>
+<assembly>
+<name>
+IntelliPlugin
+</name>
+</assembly>
+<members>
+<member name="M:IntelliPlugin.Sheet1.#ctor(Microsoft.Office.Tools.Excel.Factory,System.IServiceProvider)">
+</member><member name="M:IntelliPlugin.Sheet1.Initialize">
+</member><member name="M:IntelliPlugin.Sheet1.FinishInitialization">
+</member><member name="M:IntelliPlugin.Sheet1.InitializeDataBindings">
+</member><member name="M:IntelliPlugin.Sheet1.InitializeCachedData">
+</member><member name="M:IntelliPlugin.Sheet1.InitializeData">
+</member><member name="M:IntelliPlugin.Sheet1.BindToData">
+</member><member name="M:IntelliPlugin.Sheet1.StartCaching(System.String)">
+</member><member name="M:IntelliPlugin.Sheet1.StopCaching(System.String)">
+</member><member name="M:IntelliPlugin.Sheet1.IsCached(System.String)">
+</member><member name="M:IntelliPlugin.Sheet1.BeginInitialization">
+</member><member name="M:IntelliPlugin.Sheet1.EndInitialization">
+</member><member name="M:IntelliPlugin.Sheet1.InitializeControls">
+</member><member name="M:IntelliPlugin.Sheet1.InitializeComponents">
+</member><member name="M:IntelliPlugin.Sheet1.NeedsFill(System.String)">
+</member><member name="T:IntelliPlugin.Sheet1">
+</member><member name="M:IntelliPlugin.ThisWorkbook.#ctor(Microsoft.Office.Tools.Excel.Factory,System.IServiceProvider)">
+</member><member name="M:IntelliPlugin.ThisWorkbook.Initialize">
+</member><member name="M:IntelliPlugin.ThisWorkbook.FinishInitialization">
+</member><member name="M:IntelliPlugin.ThisWorkbook.InitializeDataBindings">
+</member><member name="M:IntelliPlugin.ThisWorkbook.InitializeCachedData">
+</member><member name="M:IntelliPlugin.ThisWorkbook.InitializeData">
+</member><member name="M:IntelliPlugin.ThisWorkbook.BindToData">
+</member><member name="M:IntelliPlugin.ThisWorkbook.StartCaching(System.String)">
+</member><member name="M:IntelliPlugin.ThisWorkbook.StopCaching(System.String)">
+</member><member name="M:IntelliPlugin.ThisWorkbook.IsCached(System.String)">
+</member><member name="M:IntelliPlugin.ThisWorkbook.BeginInitialization">
+</member><member name="M:IntelliPlugin.ThisWorkbook.EndInitialization">
+</member><member name="M:IntelliPlugin.ThisWorkbook.InitializeControls">
+</member><member name="M:IntelliPlugin.ThisWorkbook.InitializeComponents">
+</member><member name="M:IntelliPlugin.ThisWorkbook.NeedsFill(System.String)">
+</member><member name="M:IntelliPlugin.ThisWorkbook.OnShutdown">
+</member><member name="T:IntelliPlugin.ThisWorkbook">
+</member><member name="M:IntelliPlugin.Globals.#ctor">
+</member><member name="T:IntelliPlugin.Globals">
+</member><member name="M:IntelliPlugin.ThisRibbonCollection.#ctor(Microsoft.Office.Tools.Ribbon.RibbonFactory)">
+</member><member name="T:IntelliPlugin.ThisRibbonCollection">
+</member><member name="P:IntelliPlugin.My.Resources.Resources.ResourceManager">
+	<summary>
+  Returns the cached ResourceManager instance used by this class.
+</summary>
+</member><member name="P:IntelliPlugin.My.Resources.Resources.Culture">
+	<summary>
+  Overrides the current thread's CurrentUICulture property for all
+  resource lookups using this strongly typed resource class.
+</summary>
+</member><member name="T:IntelliPlugin.My.Resources.Resources">
+	<summary>
+  A strongly-typed resource class, for looking up localized strings, etc.
+</summary>
+</member>
+</members>
+</doc>
