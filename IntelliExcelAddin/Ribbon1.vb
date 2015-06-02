@@ -1280,7 +1280,6 @@ Public Class Ribbon1
         '    Exit Sub
         'End If
         Dim temp As String
-        Dim b As Boolean
         Dim header As String
         For x As Integer = 1 To lastColumn
             For y As Integer = 2 To lastRow
@@ -1319,7 +1318,7 @@ Public Class Ribbon1
                     End If
                 End If
 
-                If temp = 0 And (String.Compare(header, "RoHS") = 0 Or String.Compare(header, "Marking") = 0 Or String.Compare(header, "Pref") = 0) Then
+                If String.Compare(temp, "0") = 0 And String.Compare(header, "RoHS") <> 0 And String.Compare(header, "Marking") <> 0 And String.Compare(header, "Pref") <> 0 Then
                     MsgBox("There is an '0' value.")
                     xlWks.Range(num2col(x) & y).Interior.Color = RGB(240, 128, 128)
                     Exit Sub
