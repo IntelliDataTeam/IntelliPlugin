@@ -1220,6 +1220,8 @@ Public Class Ribbon1
     '   %Create one big loop that goes through all of the rows/columns of the worksheet
     '       and have all of the data checkign done in there. That way there won't be multiple
     '       loops running and thus, cut down on calculation time.
+    '   !Performance is extremely slow. Might have to use threading or cut down the amount of columns.
+    '       %Solution: Use List.Distinct instead
     ' *Created by Quang
     '   05/28/2015
     '   -Created
@@ -1228,105 +1230,93 @@ Public Class Ribbon1
 
         Dim lastRow = XlApp.ActiveCell.SpecialCells(XlCellType.xlCellTypeLastCell).Row
         Dim lastColumn = XlApp.ActiveCell.SpecialCells(XlCellType.xlCellTypeLastCell).Column
-        'Dim pnCol As Integer
-        'Dim tolCol As Integer
-        Dim regex_tol As RegularExpressions.Regex = New RegularExpressions.Regex("^(\d|[-+]).*(%|pF)$")
-
-        'For x As Integer = 1 To lastColumn
-        '    Select Case xlWks.Cells(1, x).value
-        '        Case "PN"
-        '            pnCol = x
-        '        Case "Tol"
-        '            tolCol = x
-        '        Case "id"
-        '            MsgBox("Please Delete the 'id' column.")
-        '            Exit Sub
-        '        Case "ImportDate"
-        '            MsgBox("Please Delete the 'ImportDate' column.")
-        '            Exit Sub
-        '    End Select
-        'Next
-        'If pnCol = Nothing Then
-        '    MsgBox("There is no 'PN' column.")
-        '    Exit Sub
-        'End If
-
-        'Dim temp As String
-
-        'For x As Integer = 2 To lastRow
-        '    temp = xlWks.Range(num2col(pnCol) & x).Value
-        '    For y As Integer = x + 1 To lastRow
-        '        If String.Compare(xlWks.Range(num2col(pnCol) & y).Value, temp) = 0 Then
-        '            MsgBox("There is a duplicate in the 'PN' column.")
-        '            xlWks.Range(num2col(pnCol) & x).Interior.Color = RGB(240, 128, 128)
-        '            xlWks.Range(num2col(pnCol) & y).Interior.Color = RGB(240, 128, 128)
-        '            Exit Sub
-        '        End If
-        '    Next
-        '    Dim match As RegularExpressions.Match = regex_tol.Match(xlWks.Range(num2col(tolCol) & x).Value)
-        '    If Not match.Success Then
-        '        MsgBox("Errors found in 'Tol' column: " & xlWks.Range(num2col(tolCol) & x).Value)
-        '        xlWks.Range(num2col(tolCol) & x).Interior.Color = RGB(240, 128, 128)
-        '        Exit Sub
-        '    End If
-        'Next
-
-        'Dim worksheet As Range = xlWks.Range("A1:" & num2col(lastColumn) & lastRow)
-        'Dim err As Range = Nothing
-        'err = worksheet.Find("#", , XlFindLookIn.xlValues, XlLookAt.xlPart, XlSearchOrder.xlByRows, XlSearchDirection.xlNext, False)
-        'If Not IsNothing(err) Then
-        '    MsgBox("There is an error.")
-        '    err.Interior.Color = RGB(240, 128, 128)
-        '    Exit Sub
-        'End If
-        Dim temp As String
+        Dim regex_tol As RegularExpressions.Regex = New RegularExpressions.Regex("(\d|[-+]).*(%|pF)")
+        Dim temp() As String
         Dim header As String
-        For x As Integer = 1 To lastColumn
-            For y As Integer = 2 To lastRow
-                temp = xlWks.Range(num2col(x) & y).Value
-                header = xlWks.Range(num2col(x) & 1).Value
-                Select Case header
-                    Case "PN"
-                        For z As Integer = y + 1 To lastRow
-                            If String.Compare(xlWks.Range(num2col(x) & z).Value, temp) = 0 Then
-                                MsgBox("There is a duplicate in the 'PN' column.")
-                                xlWks.Range(num2col(x) & y).Interior.Color = RGB(240, 128, 128)
-                                xlWks.Range(num2col(x) & z).Interior.Color = RGB(240, 128, 128)
-                                Exit Sub
-                            End If
-                        Next
-                    Case "id"
-                        MsgBox("Please Delete the 'id' column.")
-                        Exit Sub
-                    Case "ImportDate"
-                        MsgBox("Please Delete the 'ImportDate' column.")
-                        Exit Sub
-                    Case "Tol"
-                        Dim match As RegularExpressions.Match = regex_tol.Match(xlWks.Range(num2col(x) & y).Value)
-                        If Not match.Success Then
-                            MsgBox("Errors found in 'Tol' column: " & xlWks.Range(num2col(x) & y).Value)
-                            xlWks.Range(num2col(x) & y).Interior.Color = RGB(240, 128, 128)
-                            Exit Sub
-                        End If
-                End Select
+        Dim list As New List(Of String)
+        Dim num As Integer
+        Dim progress = New loading_bar
+        progress.Show()
+        progress.ProgressBar1.Minimum = 0
+        progress.ProgressBar1.Maximum = lastColumn * lastRow
 
-                If Not IsNothing(temp) Then
-                    If temp.Contains("#") Then
-                        MsgBox("There is an error.")
-                        xlWks.Range(num2col(x) & y).Interior.Color = RGB(240, 128, 128)
+        For x As Integer = 1 To lastColumn
+            header = xlWks.Range(num2col(x) & 1).Value
+            progress.ProgressBar1.Value += 1
+            list.Clear()
+            For y As Integer = 2 To lastRow
+                If IsNothing(xlWks.Range(num2col(x) & y).Value) Then
+                    list.Add("NULL")
+                Else
+                    list.Add(xlWks.Range(num2col(x) & y).Value.ToString)
+                End If
+                progress.ProgressBar1.Value += 1
+            Next
+
+            Select Case header
+                Case "PN"
+                    If list.Distinct.ToArray.Length < list.Count Then
+                        MsgBox("There are duplicates in 'PN'.")
                         Exit Sub
                     End If
-                End If
 
-                If String.Compare(temp, "0") = 0 And String.Compare(header, "RoHS") <> 0 And String.Compare(header, "Marking") <> 0 And String.Compare(header, "Pref") <> 0 Then
-                    MsgBox("There is an '0' value.")
-                    xlWks.Range(num2col(x) & y).Interior.Color = RGB(240, 128, 128)
+                Case "id"
+                    MsgBox("Please Delete the 'id' column.")
                     Exit Sub
-                End If
-
-            Next
+                Case "ImportDate"
+                    MsgBox("Please Delete the 'ImportDate' column.")
+                    Exit Sub
+                Case "Tol"
+                    temp = list.Distinct.ToArray
+                    For y As Integer = 0 To temp.Length - 1
+                        'MsgBox(temp(y))
+                        Dim match As RegularExpressions.Match = regex_tol.Match(temp(y))
+                        If Not match.Success Then
+                            MsgBox("Errors found in 'Tol': " & temp(y))
+                            Exit Sub
+                        End If
+                    Next
+                Case "RoHS"
+                    temp = list.Distinct.ToArray
+                    For y As Integer = 0 To temp.Length - 1
+                        If String.Compare(temp(y), "0") <> 0 And String.Compare(temp(y), "1") <> 0 Then
+                            MsgBox("Error in 'RoHS'.")
+                            Exit Sub
+                        End If
+                    Next
+                Case "marking"
+                    temp = list.Distinct.ToArray
+                    For y As Integer = 0 To temp.Length - 1
+                        If String.Compare(temp(y), "0") <> 0 And String.Compare(temp(y), "1") <> 0 And String.Compare(temp(y), "NULL") <> 0 Then
+                            MsgBox("Error in 'marking'.")
+                            Exit Sub
+                        End If
+                    Next
+                Case "Pref"
+                    temp = list.Distinct.ToArray
+                    For y As Integer = 0 To temp.Length - 1
+                        If String.Compare(temp(y), "NULL") = 0 Then
+                            MsgBox("There is a null cell in 'Pref'.")
+                            Exit Sub
+                        End If
+                    Next
+                Case Else
+                    temp = list.Distinct.ToArray
+                    For y As Integer = 0 To temp.Length - 1
+                        If String.Compare(temp(y), "0") = 0 Then
+                            MsgBox("Random '0' Value.")
+                            Exit Sub
+                        ElseIf Integer.TryParse(temp(y), num) Then
+                            If num < -1 Then
+                                MsgBox("Error in the data.")
+                                Exit Sub
+                            End If
+                        End If
+                    Next
+            End Select
+            XlApp.StatusBar = num2col(x)
         Next
-
+        progress.Close()
         MsgBox("Everything is good to go.")
     End Sub
 
