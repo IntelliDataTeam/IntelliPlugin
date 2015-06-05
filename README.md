@@ -7,6 +7,10 @@ An Excel plugin written in VB.NET to assist the Data team in their data building
 |-Function: Import CSV file -> Calculate Formulas -> Output CSV file|
 |-Input File: 2138868 PNs|
 |-Performance: 7916.559s @ 5000 (Write to file only after Export is filled)|
+|<b>Validator - Performance</b>|
+|-Function: Import CSV file -> Calculate Formulas & Determine Validity -> Output CSV file|
+|-Input File: 11658099 PNs|
+|-Performance: 5941.72s @ 5000|
 
 |06/02/2015|
 |---------------------------|
