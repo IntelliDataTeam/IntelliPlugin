@@ -634,7 +634,7 @@ Public Class Ribbon1
     '   -Added CSV export functionality
     '   -Overall convertion and cleaning of VBA code
     '................................................................................................
-    Public Sub Population(ByVal control As Office.IRibbonControl)
+    Public Sub Population_1(ByVal control As Office.IRibbonControl)
         ' And it begins...
         VariableSetup()
         '......................................Configurations.............................................
@@ -727,6 +727,23 @@ Public Class Ribbon1
 
             xlWkb.Sheets("Export").Range("A1:" & column & "1").Value = xlWkb.Sheets("Master").Range("A1:" & column & "1").Value
 
+            '*****************************Creating & Opening Txt File****************************************************
+            Dim rowValues As String = Nothing
+
+
+
+            Dim path1 As String = Path.GetTempFileName()
+            Dim fi As FileInfo = New FileInfo(strFullPath)
+            Dim oFile As String = fi.DirectoryName & "\" & Path.GetFileNameWithoutExtension(fi.Name) & "_output.csv"
+
+
+            If File.Exists(oFile) = True Then
+                File.Delete(oFile)
+            End If
+
+            Dim sw As StreamWriter = File.CreateText(oFile)
+            '***********************************************************************************************************
+
             sWatch.Start()
 
             'Import in csv file
@@ -749,6 +766,7 @@ Public Class Ribbon1
 
                 'This While Loop Grabs batches specified by 'limit'
                 While Not MyReader.EndOfData
+
                     XlApp.StatusBar = "Beginning of While Loop"
                     i = 0
                     While i < limit And Not MyReader.EndOfData
@@ -787,7 +805,24 @@ Public Class Ribbon1
                     End If
 
                     '......................................ExportDATA.................................................
-                    xlWkb.Sheets("Export").Range("A" & row & ":" & column & row + i - 1).Value = xlWkb.Sheets("Master").Range("A3:" & column & 2 + i).Value
+                    If pForm.overflowCheckbox.Checked Then
+                        If row < i + 2 Then
+                            rowValues = Nothing
+                            For y As Integer = 1 To xlWks.Range(MyInput).Column
+                                rowValues = rowValues & "," & xlWkb.Sheets("Export").Cells(1, y).Value
+                            Next
+                            sw.WriteLine(rowValues.Substring(1))
+                        End If
+                        For x As Integer = 3 To i + 2
+                            rowValues = Nothing
+                            For y As Integer = 1 To xlWks.Range(MyInput).Column
+                                rowValues = rowValues & "," & xlWkb.Sheets("Master").Cells(x, y).Value
+                            Next
+                            sw.WriteLine(rowValues.Substring(1))
+                        Next
+                    Else
+                        xlWkb.Sheets("Export").Range("A" & row & ":" & column & row + i - 1).Value = xlWkb.Sheets("Master").Range("A3:" & column & 2 + i).Value
+                    End If
 
                     'Clear PNs from Master
                     xlWkb.Sheets("Master").Range("A3:" & column & i + 2).Delete()
@@ -804,24 +839,11 @@ Public Class Ribbon1
             MsgBox("Sample Data READY! " & vbCrLf & "Execution Time: " & sWatch.ElapsedMilliseconds / 1000 & " s" & vbCrLf & "Processed " & row - 2 & " records @ " & limit & " per batch")
 
             '...........................................Export_To_CSV.................................................
-            If pForm.exportCheckbox.Checked Then
-                Dim rowValues As String = Nothing
-
+            If pForm.exportCheckbox.Checked And pForm.overflowCheckbox.Checked = False Then
                 Dim progress = New loading_bar
                 progress.Show()
                 progress.ProgressBar1.Minimum = 0
                 progress.ProgressBar1.Maximum = row - 1
-
-                Dim path1 As String = Path.GetTempFileName()
-                Dim fi As FileInfo = New FileInfo(strFullPath)
-                Dim oFile As String = fi.DirectoryName & "\" & Path.GetFileNameWithoutExtension(fi.Name) & "_output.csv"
-
-
-                If File.Exists(oFile) = True Then
-                    File.Delete(oFile)
-                End If
-
-                Dim sw As StreamWriter = File.CreateText(oFile)
 
                 For x As Integer = 1 To row - 1
                     rowValues = Nothing
@@ -833,16 +855,282 @@ Public Class Ribbon1
                 Next
 
                 'Clean up
-                sw.Flush()
-                sw.Close()
+
                 progress.Close()
                 MsgBox("Successfully Exported to CSV file (" & oFile)
             Else
                 pForm.Close()
             End If
+            If pForm.exportCheckbox.Checked = False And pForm.overflowCheckbox.Checked = False Then
+                File.Delete(oFile)
+            End If
+            sw.Flush()
+            sw.Close()
         End If
 
         'Clean up
+
+        XlApp.ScreenUpdating = True
+        XlApp.Calculation = XlCalculation.xlCalculationAutomatic
+        XlApp.EnableEvents = True
+        XlApp.DisplayStatusBar = True
+    End Sub
+
+    '......................................Population Version 2......................................
+    ' This function take in PNs from a csv file and apply user's formulas to them in batches before
+    ' pasting the raw values to a new worksheet. The purpose of this function is to reduce calculation
+    ' time when applying formulas to large quantity of PNs.
+    ' *Created by Luke and Updated by Quang
+    '   04/27/2015
+    '   -Bring code to be on par with VBA while not using clipboard
+    '   -Able to take in multiple inputs
+    '   04/17/2015
+    '   -Cleaned up code
+    '   -Increased calculation w/o using clipboard
+    '   04/14/2015
+    '   -Added Progress bar
+    '   -Improved performance
+    '   04/13/2015
+    '   -Optimized code to run 4-5x Faster than VBA code
+    '   -Tidied up the codes
+    '   04/09/2015
+    '   -Replaced ADO COM with TextFieldParser to import csv files
+    '   -Added Checks and Option to create 'Master' and 'Export' worksheets
+    '   -Added CSV export functionality
+    '   -Overall convertion and cleaning of VBA code
+    '................................................................................................
+    Public Sub Population_2(ByVal control As Office.IRibbonControl)
+        ' And it begins...
+        VariableSetup()
+        '......................................Configurations.............................................
+        Dim row As Integer = 2 'Which row in "Export" will the data start pasting from
+        XlApp.ScreenUpdating = True 'Set to 'False' to increase performance
+        XlApp.Calculation = XlCalculation.xlCalculationManual 'Set to 'Manual' to increase performance
+        XlApp.EnableEvents = False 'Set to 'False' to increase performance
+        XlApp.DisplayStatusBar = True
+        Dim xLimit As Integer = 1048576
+        '...................................../Configurations.............................................
+
+
+        MsgBox("CHECKLIST:" & vbCrLf & "NO SPECIAL CHARACTERS OR SPACES IN FILE NAME!!" & vbCrLf & "Is Your Formula sheet named 'Master'?" & vbCrLf & "Master Format:" & vbCrLf & _
+        "   First row contains Headings" & vbCrLf & "   Second Row contains formulas" & vbCrLf & "  Third Row is blank" & vbCrLf & "Is your export sheet named 'Export'?")
+
+        XlApp.StatusBar = "You will go one on one with the Great One!"
+
+        '......................................Format_Checks...............................................
+
+        Dim sWatch As New Stopwatch 'Keep track of how fast the program is running
+        Dim sh As Worksheet
+        Dim mflag As Boolean = False
+        Dim eflag As Boolean = False
+        Dim result As Integer
+        Dim strFullPath As String
+        Dim tempList As New List(Of String)
+        Dim MyInput As String
+        Dim i As Integer
+        Dim pForm As New PopForm
+        Dim err As Range = Nothing
+
+        pForm.ShowDialog()
+
+        If pForm.DialogResult = DialogResult.OK Then
+            MyInput = pForm.lastCol.Text
+            Dim InputColumn = pForm.colNum.Value
+            pForm.Close()
+
+            For Each sh In xlWkb.Sheets
+                If (sh.Name = "Master") Then
+                    mflag = True
+                End If
+                If (sh.Name = "Export") Then
+                    eflag = True
+                End If
+            Next
+
+            If mflag = False And eflag = False Then
+                result = MsgBox("You do not have both the 'Master' and 'Export' sheet!" & vbCrLf & "Do you want me to create it for you?", MsgBoxStyle.YesNo)
+                If (result = MsgBoxResult.Yes) Then
+                    Dim nWks As Worksheet
+                    nWks = CType(xlWkb.Worksheets.Add(After:=xlWks), Worksheet)
+                    nWks.Name = "Export"
+                    xlWks.Name = "Master"
+                Else : Exit Sub
+                End If
+            ElseIf mflag = True And eflag = False Then
+                result = MsgBox("You do not have the 'Export' sheet!" & vbCrLf & "Do you want me to create it for you?", MsgBoxStyle.YesNo)
+                If (result = MsgBoxResult.Yes) Then
+                    Dim nWks As Worksheet
+                    nWks = CType(xlWkb.Worksheets.Add(After:=xlWks), Worksheet)
+                    nWks.Name = "Export"
+                Else : Exit Sub
+                End If
+            ElseIf mflag = False And eflag = True Then
+                result = MsgBox("You do not have the 'Master' sheet!" & vbCrLf & "Do you want me to create it for you?", MsgBoxStyle.YesNo)
+                If (result = MsgBoxResult.Yes) Then
+                    xlWks.Name = "Master"
+                Else : Exit Sub
+                End If
+            End If
+
+            xlWkb.Sheets("Master").Activate()
+
+            '...................................../Format_Checks..............................................
+
+            'Import File
+            strFullPath = XlApp.GetOpenFilename("Text Files (*.csv),*.csv", , "Please select IMPORT file...")
+
+            XlApp.StatusBar = "If you smell what The Rock is Cooking!"
+
+            If strFullPath = "False" Then Exit Sub 'User pressed Cancel on the open file dialog
+
+            'Copy & Paste Headers from "Master" to "Export"
+            Dim column As String = Nothing
+            For Each x In MyInput
+                If IsNumeric(x) = False Then
+                    column += x
+                End If
+            Next
+
+            xlWkb.Sheets("Export").Range("A1:" & column & "1").Value = xlWkb.Sheets("Master").Range("A1:" & column & "1").Value
+
+            Dim rowValues As New StringBuilder
+
+            '*****************************Creating & Opening Txt File****************************************************
+            Dim fi As FileInfo = New FileInfo(strFullPath)
+            Dim oFile As String = fi.DirectoryName & "\" & Path.GetFileNameWithoutExtension(fi.Name) & "_populated.csv"
+
+
+            If File.Exists(oFile) = True Then
+                File.Delete(oFile)
+            End If
+
+            Dim sw As StreamWriter = File.CreateText(oFile)
+            'sw = File.AppendText(oFile)
+            '***********************************************************************************************************
+
+            If File.ReadAllLines(strFullPath).Length > 1048575 Then
+                MsgBox("There are more rows in the input file than Excel can hold, so the output data will be exported to a CSV file.")
+                pForm.exportCheckbox.Checked = True
+            End If
+
+            sWatch.Start()
+
+            'Import in csv file
+            Using MyReader As New  _
+                Microsoft.VisualBasic.FileIO.TextFieldParser(strFullPath)
+                MyReader.TextFieldType = FileIO.FieldType.Delimited
+                MyReader.SetDelimiters(",")
+
+                'Set the array
+                Dim currentRow() As String
+                Dim MArray(limit, InputColumn) As String
+                Dim SFColumn As String = num2col(InputColumn + 1)
+                Dim flag As Boolean
+                If pForm.headerCheckbox.Checked Then
+                    flag = True
+                Else
+                    flag = False
+                End If
+
+
+                'This While Loop Grabs batches specified by 'limit'
+                While Not MyReader.EndOfData
+                    While row + i < xLimit And Not MyReader.EndOfData
+                        XlApp.StatusBar = "Beginning of While Loop"
+                        i = 0
+                        While i < limit And Not MyReader.EndOfData
+                            If (flag) Then
+                                currentRow = MyReader.ReadFields ' Get rid of headers
+                                flag = False
+                            End If
+
+                            currentRow = MyReader.ReadFields
+                            For j As Integer = 0 To currentRow.Length - 1
+                                MArray(i, j) = currentRow(j)
+                            Next
+                            i += 1
+                        End While
+
+                        xlWkb.Sheets("Master").Range("A3:" & num2col(InputColumn) & i + 2).Value = MArray
+
+
+                        '.....................................FormulaDRAG.................................................
+                        xlWkb.Sheets("Master").Range(SFColumn & "2:" & MyInput).Resize(i + 1).FillDown()
+
+                        'Force formula calculations before copy&paste values
+                        xlWkb.Sheets("Master").Range(SFColumn & "3:" & column & i + 2).Calculate()
+
+                        '.....................................Error Checking..............................................
+                        err = xlWkb.Sheets("Master").Range(SFColumn & "3:" & column & i + 2).Find("#", , Excel.XlFindLookIn.xlValues, Excel.XlLookAt.xlPart, Excel.XlSearchOrder.xlByRows, Excel.XlSearchDirection.xlNext, False)
+                        If Not IsNothing(err) Then
+                            XlApp.StatusBar = "There is an error!"
+                            xlWks.Range(err.AddressLocal).Activate()
+                            MsgBox("ERROR in cell: " & err.AddressLocal)
+                            XlApp.ScreenUpdating = True
+                            XlApp.Calculation = XlCalculation.xlCalculationAutomatic
+                            XlApp.EnableEvents = True
+                            XlApp.DisplayStatusBar = True
+                            Exit Sub
+                        End If
+
+                        '......................................ExportDATA.................................................
+                        xlWkb.Sheets("Export").Range("A" & row & ":" & column & row + i - 1).Value = xlWkb.Sheets("Master").Range("A3:" & column & 2 + i).Value
+
+                        'Clear PNs from Master
+                        xlWkb.Sheets("Master").Range("A3:" & column & i + 2).Delete()
+
+                        row = row + i
+                        XlApp.StatusBar = "End of While Loop"
+                    End While
+
+                    '...........................................Export_To_CSV.................................................
+                    If pForm.exportCheckbox.Checked Then
+                        Dim progress = New loading_bar
+                        progress.Show()
+                        progress.ProgressBar1.Minimum = 0
+                        progress.ProgressBar1.Maximum = row - 1
+
+                        For x As Integer = 1 To row - 1
+                            For y As Integer = 1 To xlWks.Range(MyInput).Column
+                                If y <> 1 And y <> xlWks.Range(MyInput).Column Then
+                                    rowValues.Append(",")
+                                End If
+                                rowValues.Append(xlWkb.Sheets("Export").Cells(x, y).Value)
+                            Next
+                            sw.WriteLine(rowValues.ToString)
+                            progress.ProgressBar1.Value += 1
+                            rowValues.Clear()
+                        Next
+                        'Clean up
+                        progress.Close()
+
+                        'Reset row
+                        xlWkb.Sheets("Export").Range("A2:" & column & row).Delete()
+
+                    Else
+                        MsgBox("ERROR: Can't hold anymore data in Export.")
+                        Exit Sub
+                    End If
+
+                    row = 2
+                End While
+                MyReader.Close()
+                MyReader.Dispose()
+            End Using
+
+            sWatch.Stop()
+            XlApp.StatusBar = "Layeth The Smackethdown!"
+            MsgBox("Sample Data READY! " & vbCrLf & "Execution Time: " & sWatch.ElapsedMilliseconds / 1000 & " s" & vbCrLf & "Processed " & row - 2 & " records @ " & limit & " per batch")
+
+            If pForm.exportCheckbox.Checked = False Then
+                File.Delete(oFile)
+            End If
+            sw.Flush()
+            sw.Close()
+        End If
+
+        'Clean up
+
         XlApp.ScreenUpdating = True
         XlApp.Calculation = XlCalculation.xlCalculationAutomatic
         XlApp.EnableEvents = True
@@ -921,7 +1209,7 @@ Public Class Ribbon1
 
             Dim path1 As String = Path.GetTempFileName()
             Dim fi As FileInfo = New FileInfo(strFullPath)
-            Dim oFile As String = fi.DirectoryName & "\" & Path.GetFileNameWithoutExtension(fi.Name) & "_output.csv"
+            Dim oFile As String = fi.DirectoryName & "\" & Path.GetFileNameWithoutExtension(fi.Name) & "_validated.csv"
             Dim progress = New loading_bar
 
             Dim max As Integer = File.ReadLines(strFullPath).Count  'Could severely slow down operation time if use on a large file

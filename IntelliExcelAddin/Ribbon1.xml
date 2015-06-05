@@ -30,7 +30,7 @@
         <group id="fun" label="Fun Stuffs">
           <menu id="custompaste" label="Population/Pulldown" imageMso="HappyFace" size="large">
             <button id="population" label="Population" imageMso="HappyFace"
-                  onAction="Population" screentip="This function import a list of PNs and apply formulas to them. Then output the values in text." />
+                  onAction="Population_2" screentip="This function import a list of PNs and apply formulas to them. Then output the values in text." />
             <button id="pulldown" label="Pull Down" imageMso="PictureBrightnessGallery" onAction="PullDown" />
           </menu>
           <menu id="dataparse" label="Data Parsing" imageMso="HappyFace" size="large">
