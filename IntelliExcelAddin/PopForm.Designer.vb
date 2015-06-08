@@ -30,7 +30,6 @@ Partial Class PopForm
         Me.exportCheckbox = New System.Windows.Forms.CheckBox()
         Me.ok_button = New System.Windows.Forms.Button()
         Me.cancel_button = New System.Windows.Forms.Button()
-        Me.overflowCheckbox = New System.Windows.Forms.CheckBox()
         CType(Me.colNum, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -91,7 +90,7 @@ Partial Class PopForm
         'ok_button
         '
         Me.ok_button.DialogResult = System.Windows.Forms.DialogResult.OK
-        Me.ok_button.Location = New System.Drawing.Point(84, 204)
+        Me.ok_button.Location = New System.Drawing.Point(99, 192)
         Me.ok_button.Name = "ok_button"
         Me.ok_button.Size = New System.Drawing.Size(75, 23)
         Me.ok_button.TabIndex = 5
@@ -101,29 +100,18 @@ Partial Class PopForm
         'cancel_button
         '
         Me.cancel_button.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.cancel_button.Location = New System.Drawing.Point(185, 204)
+        Me.cancel_button.Location = New System.Drawing.Point(200, 192)
         Me.cancel_button.Name = "cancel_button"
         Me.cancel_button.Size = New System.Drawing.Size(75, 23)
         Me.cancel_button.TabIndex = 6
         Me.cancel_button.Text = "Cancel"
         Me.cancel_button.UseVisualStyleBackColor = True
         '
-        'overflowCheckbox
-        '
-        Me.overflowCheckbox.AutoSize = True
-        Me.overflowCheckbox.Location = New System.Drawing.Point(15, 171)
-        Me.overflowCheckbox.Name = "overflowCheckbox"
-        Me.overflowCheckbox.Size = New System.Drawing.Size(152, 17)
-        Me.overflowCheckbox.TabIndex = 7
-        Me.overflowCheckbox.Text = "More than 1048576 Entry?"
-        Me.overflowCheckbox.UseVisualStyleBackColor = True
-        '
         'PopForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(288, 253)
-        Me.Controls.Add(Me.overflowCheckbox)
+        Me.ClientSize = New System.Drawing.Size(287, 227)
         Me.Controls.Add(Me.cancel_button)
         Me.Controls.Add(Me.ok_button)
         Me.Controls.Add(Me.exportCheckbox)
@@ -147,5 +135,4 @@ Partial Class PopForm
     Friend WithEvents exportCheckbox As System.Windows.Forms.CheckBox
     Friend WithEvents ok_button As System.Windows.Forms.Button
     Friend WithEvents cancel_button As System.Windows.Forms.Button
-    Friend WithEvents overflowCheckbox As System.Windows.Forms.CheckBox
 End Class
