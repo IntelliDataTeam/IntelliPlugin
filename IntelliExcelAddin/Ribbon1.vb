@@ -751,6 +751,8 @@ Public Class Ribbon1
             End If
 
             sWatch.Start()
+            'Change the format of 'Export' sheet to Text
+            xlWkb.Sheets("Export").Cells.NumberFormat = "@"
 
             'Import in csv file
             Using MyReader As New  _
@@ -832,7 +834,7 @@ Public Class Ribbon1
                                 If y <> 1 And y <> xlWks.Range(MyInput).Column Then
                                     rowValues.Append(",")
                                 End If
-                                rowValues.Append(xlWkb.Sheets("Export").Cells(x, y).Value)
+                                rowValues.Append(xlWkb.Sheets("Export").Cells(x, y).Value2)
                             Next
                             sw.WriteLine(rowValues.ToString)
                             progress.ProgressBar1.Value += 1
@@ -1039,7 +1041,7 @@ Public Class Ribbon1
                             progress.ProgressBar1.Value += 1
                         Else
                             If xlWkb.Sheets("Master").Range(vForm.validColumn.Text & x).Text = "TRUE" Then
-                                For y As Integer = 1 To xlWkb.Sheets("Master").Range(vForm.exCol.Text).Column 'xlWks.Range(MyInput).Column
+                                For y As Integer = 1 To xlWkb.Sheets("Master").Range(vForm.exCol.Text).Column
                                     If y = 1 Then
                                         rowValues = xlWkb.Sheets("Master").Cells(x, y).Value
                                     ElseIf y <> xlWkb.Sheets("Master").Range(vForm.validColumn.Text & x).Column Then
@@ -1232,7 +1234,10 @@ Public Class Ribbon1
     '   04/27/2015
     '   -Created
     Public Sub BlanksRemove(ByVal control As Office.IRibbonControl)
-
+        VariableSetup()
+        xlWks.Cells.NumberFormat = "@"
+        xlWks.Range("C1:D2").Value = xlWks.Range("A1:B2").Value
+        xlWks.Range("C3:D4").Value = xlWks.Range("A3:B4").Value
     End Sub
 
     '......................................Data Checking...................................................
