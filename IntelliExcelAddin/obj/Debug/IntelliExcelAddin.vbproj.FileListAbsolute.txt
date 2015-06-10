@@ -13,9 +13,11 @@ C:\Users\Quang\documents\visual studio 2013\Projects\IntelliPlugin\IntelliExcelA
 C:\Users\Quang\documents\visual studio 2013\Projects\IntelliPlugin\IntelliExcelAddin\obj\Debug\Interop.Scripting.dll
 C:\Users\Quang\documents\visual studio 2013\Projects\IntelliPlugin\IntelliExcelAddin\obj\Debug\IntelliExcelAddin.vbproj.ResolveComReference.cache
 C:\Users\Quang\documents\visual studio 2013\Projects\IntelliPlugin\IntelliExcelAddin\obj\Debug\IntelliExcelAddin.DataCheck.resources
+C:\Users\Quang\documents\visual studio 2013\Projects\IntelliPlugin\IntelliExcelAddin\obj\Debug\IntelliExcelAddin.ConcatForm.resources
 C:\Users\Quang\documents\visual studio 2013\Projects\IntelliPlugin\IntelliExcelAddin\obj\Debug\IntelliExcelAddin.GetCommand.resources
 C:\Users\Quang\documents\visual studio 2013\Projects\IntelliPlugin\IntelliExcelAddin\obj\Debug\IntelliExcelAddin.MyLogin.resources
 C:\Users\Quang\documents\visual studio 2013\Projects\IntelliPlugin\IntelliExcelAddin\obj\Debug\IntelliExcelAddin.PopForm.resources
+C:\Users\Quang\documents\visual studio 2013\Projects\IntelliPlugin\IntelliExcelAddin\obj\Debug\IntelliExcelAddin.PullDownForm.resources
 C:\Users\Quang\documents\visual studio 2013\Projects\IntelliPlugin\IntelliExcelAddin\obj\Debug\IntelliExcelAddin.ValForm.resources
 C:\Users\Quang\documents\visual studio 2013\Projects\IntelliPlugin\IntelliExcelAddin\obj\Debug\IntelliExcelAddin.Text2Column.resources
 C:\Users\Quang\documents\visual studio 2013\Projects\IntelliPlugin\IntelliExcelAddin\obj\Debug\IntelliExcelAddin.loading_bar.resources
@@ -25,5 +27,3 @@ C:\Users\Quang\documents\visual studio 2013\Projects\IntelliPlugin\IntelliExcelA
 C:\Users\Quang\documents\visual studio 2013\Projects\IntelliPlugin\IntelliExcelAddin\obj\Debug\IntelliExcelAddin.dll
 C:\Users\Quang\documents\visual studio 2013\Projects\IntelliPlugin\IntelliExcelAddin\obj\Debug\IntelliExcelAddin.xml
 C:\Users\Quang\documents\visual studio 2013\Projects\IntelliPlugin\IntelliExcelAddin\obj\Debug\IntelliExcelAddin.pdb
-C:\Users\Quang\documents\visual studio 2013\Projects\IntelliPlugin\IntelliExcelAddin\obj\Debug\IntelliExcelAddin.PullDownForm.resources
-C:\Users\Quang\documents\visual studio 2013\Projects\IntelliPlugin\IntelliExcelAddin\obj\Debug\IntelliExcelAddin.ConcatForm.resources

@@ -57,6 +57,8 @@ Public Class Ribbon1
     Private tLen As Integer
     Private XlApp As Excel.Application
     Private Const limit As Integer = 5000 'The number of operations that Population and Validator will do per batch
+    'Private Const xLimit As Integer = 1048576
+    Private Const xLimit As Integer = 10001
     Private username As String
     Private password As String
 #End Region
@@ -645,7 +647,6 @@ Public Class Ribbon1
         XlApp.Calculation = XlCalculation.xlCalculationManual 'Set to 'Manual' to increase performance
         XlApp.EnableEvents = False 'Set to 'False' to increase performance
         XlApp.DisplayStatusBar = True
-        Dim xLimit As Integer = 1048576
         '...................................../Configurations.............................................
 
 
@@ -667,6 +668,8 @@ Public Class Ribbon1
         Dim i As Integer
         Dim pForm As New PopForm
         Dim err As Range = Nothing
+        Dim total As Integer
+        Dim current As Integer = 1
 
         pForm.ShowDialog()
 
@@ -742,17 +745,31 @@ Public Class Ribbon1
             End If
 
             Dim sw As StreamWriter = File.CreateText(oFile)
-            'sw = File.AppendText(oFile)
             '***********************************************************************************************************
 
-            If File.ReadAllLines(strFullPath).Length > 1048575 Then
+            'Checking the number of lines in the input file
+            total = File.ReadAllLines(strFullPath).Length
+            If total > 1048575 Then
                 MsgBox("There are more rows in the input file than Excel can hold, so the output data will be exported to a CSV file.")
                 pForm.exportCheckbox.Checked = True
             End If
+            total = Math.Ceiling(total / xLimit)
 
             sWatch.Start()
             'Change the format of 'Export' sheet to Text
             xlWkb.Sheets("Export").Cells.NumberFormat = "@"
+
+
+            'Write headers to file
+            For y As Integer = 1 To xlWks.Range(MyInput).Column
+                If y <> 1 And y <> xlWks.Range(MyInput).Column Then
+                    rowValues.Append(",")
+                End If
+                rowValues.Append(xlWkb.Sheets("Export").Cells(1, y).Value2)
+            Next
+            sw.WriteLine(rowValues.ToString)
+            rowValues.Clear()
+
 
             'Import in csv file
             Using MyReader As New  _
@@ -828,8 +845,9 @@ Public Class Ribbon1
                         progress.Show()
                         progress.ProgressBar1.Minimum = 0
                         progress.ProgressBar1.Maximum = row - 1
+                        progress.total.Text = String.Concat(current, "/", total)
 
-                        For x As Integer = 1 To row - 1
+                        For x As Integer = 2 To row - 1
                             For y As Integer = 1 To xlWks.Range(MyInput).Column
                                 If y <> 1 And y <> xlWks.Range(MyInput).Column Then
                                     rowValues.Append(",")
@@ -851,6 +869,7 @@ Public Class Ribbon1
                         Exit Sub
                     End If
 
+                    current += 1
                     row = 2
                 End While
                 MyReader.Close()
