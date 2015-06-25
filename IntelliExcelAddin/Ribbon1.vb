@@ -21,6 +21,7 @@ Imports System.Diagnostics
 Imports System.Windows.Forms
 Imports System.IO
 Imports MySql.Data.MySqlClient
+Imports NCalc
 
 <Runtime.InteropServices.ComVisible(True)> _
 Public Class Ribbon1
@@ -1113,8 +1114,8 @@ Public Class Ribbon1
 
         VariableSetup()
 
-
         Dim txt2col = New Text2Column
+
         If txt2col.ShowDialog() = DialogResult.OK Then
             Dim TRange
             If txt2col.TRange.Text = "" Then
@@ -1431,9 +1432,130 @@ Public Class Ribbon1
         p_form.Close()
         XlApp.Calculation = XlCalculation.xlCalculationAutomatic
     End Sub
+
+
+
+
 #End Region
 
     '***********************************************************************************************
+
+#Region "My Functions V"
+
+    '......................................DTreeBuilder...................................................
+    'This function helps you build a DTree.  Solid.
+
+    Public Sub TestFun(ByVal control As Office.IRibbonControl)
+
+        VariableSetup()
+        XlApp.StatusBar = "Shake that Tree!"
+        Dim DTreeBuilderForm As New DTreeBuilderForm
+
+        Dim Headers(6) As String
+
+        Dim RowNum As Integer = 1
+        Dim ColNum As Integer = 1
+
+        Dim ColNum_PN As Integer = 1
+        Dim Num_PN As Integer = 0
+
+        Dim ColNum_CON As Integer = 1
+        Dim ColNum_EX1 As Integer = 1
+        Dim ColNum_EX2 As Integer = 1
+        Dim ColNum_EX3 As Integer = 1
+        Dim ColNum_EX4 As Integer = 1
+        Dim ColNum_EX5 As Integer = 1
+        Dim ColNum_OUT As Integer = 7
+
+        'scan and store header indices
+        Do Until xlWks.Cells(RowNum, ColNum).Value = ""
+
+            If ColNum > 6 Then
+                MsgBox("Too many columns!")
+                Exit Do
+            End If
+
+            If xlWks.Cells(RowNum, ColNum).value = "PN" Then
+                ColNum_PN = ColNum
+            End If
+
+            Headers(ColNum) = xlWks.Cells(RowNum, ColNum).value
+            ColNum = ColNum + 1
+
+        Loop
+
+        'count the number of PNs
+        RowNum = 2
+        ColNum = ColNum_PN
+        Do Until xlWks.Cells(RowNum, ColNum).Value = ""
+            Num_PN = Num_PN + 1
+            RowNum = RowNum + 1
+        Loop
+
+        'return to top of PN column
+        RowNum = 2
+        xlWks.Cells(RowNum, ColNum).Select()
+
+
+
+        'condition checking
+
+        If DTreeBuilderForm.ShowDialog() = DialogResult.OK Then
+            ColNum_CON = Array.IndexOf(Headers, DTreeBuilderForm.ConditionColTexBox.Text)
+            ColNum_EX1 = Array.IndexOf(Headers, DTreeBuilderForm.Exception1ColTextBox.Text)
+            ColNum_EX2 = Array.IndexOf(Headers, "dxl")
+            ColNum_EX3 = Array.IndexOf(Headers, "dxl")
+            ColNum_EX4 = Array.IndexOf(Headers, "dxl")
+            ColNum_EX5 = Array.IndexOf(Headers, "dxl")
+
+            Dim e_CON As New Expression("x" & DTreeBuilderForm.ConditionOprTextBox.Text & DTreeBuilderForm.ConditionValTextBox.Text)
+            Dim e_EX1 As New Expression("x" & DTreeBuilderForm.Exception1OprTextBox.Text & DTreeBuilderForm.Exception1ValTextBox.Text)
+            Dim e_EX2 As New Expression("x = 1340")
+            Dim e_EX3 As New Expression("x = 1330")
+            Dim e_EX4 As New Expression("x = 1330")
+            Dim e_EX5 As New Expression("x = 1330")
+            Dim result_CON, result_EX1, result_EX2, result_EX3, result_EX4, result_EX5
+
+            Do Until xlWks.Cells(RowNum, ColNum).Value = ""
+
+                e_CON.Parameters.Add("x", xlWks.Cells(RowNum, ColNum_CON).Value)
+                e_EX1.Parameters.Add("x", xlWks.Cells(RowNum, ColNum_EX1).Value)
+                e_EX2.Parameters.Add("x", xlWks.Cells(RowNum, ColNum_EX2).Value)
+                e_EX3.Parameters.Add("x", xlWks.Cells(RowNum, ColNum_EX3).Value)
+                e_EX4.Parameters.Add("x", xlWks.Cells(RowNum, ColNum_EX4).Value)
+                e_EX5.Parameters.Add("x", xlWks.Cells(RowNum, ColNum_EX5).Value)
+
+                result_CON = e_CON.Evaluate
+                result_EX1 = e_EX1.Evaluate
+                result_EX2 = e_EX2.Evaluate
+                result_EX3 = e_EX3.Evaluate
+                result_EX4 = e_EX4.Evaluate
+                result_EX5 = e_EX5.Evaluate
+
+                If result_CON Then
+                    If Not result_EX1 And Not result_EX2 And Not result_EX3 And Not result_EX4 And Not result_EX5 Then
+                        xlWks.Cells(RowNum, ColNum_OUT).Value = xlWks.Cells(RowNum, ColNum_OUT).Value & DTreeBuilderForm.OptionTextBox.Text & ","
+                    End If
+                End If
+
+                e_CON.Parameters.Clear()
+                e_EX1.Parameters.Clear()
+                e_EX2.Parameters.Clear()
+                e_EX3.Parameters.Clear()
+                e_EX4.Parameters.Clear()
+                e_EX5.Parameters.Clear()
+
+                RowNum = RowNum + 1
+
+            Loop
+
+        End If
+
+
+    End Sub
+
+#End Region
+
 
 #Region "Helpers"
 

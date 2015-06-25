@@ -44,8 +44,10 @@
           <button id="comparevalues" label="Compare Values" imageMso="HappyFace" size="large"
                   screentip="Does not work!." onAction="BlanksRemove" />
           <button id="datachecking" label="Data Checking" imageMso="HappyFace" size="large"
-                  screentip="Does not work!." onAction="DataChecking" />
-        </group>
+                  screentip="Does not work!." onAction="DataChecking" />  
+          <button id="test" label="DTree Builder" imageMso="HappyFace" size="large"
+                  onAction="TestFun"/>         
+        </group>            
       </tab>
     </tabs>
   </ribbon>

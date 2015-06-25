@@ -162,6 +162,10 @@
     <Reference Include="MySql.Web">
       <HintPath>..\..\..\..\..\Downloads\mysql-connector-net-6.9.6-noinstall\v4.5\MySql.Web.dll</HintPath>
     </Reference>
+    <Reference Include="NCalc, Version=1.3.8.0, Culture=neutral, PublicKeyToken=973cde3f1cafed03, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Debug\NCalc.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -232,6 +236,12 @@
     <Compile Include="ConcatForm.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="DTreeBuilderForm.Designer.vb">
+      <DependentUpon>DTreeBuilderForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="DTreeBuilderForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="PullDownForm.Designer.vb">
       <DependentUpon>PullDownForm.vb</DependentUpon>
     </Compile>
@@ -297,6 +307,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ConcatForm.resx">
       <DependentUpon>ConcatForm.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DTreeBuilderForm.resx">
+      <DependentUpon>DTreeBuilderForm.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GetCommand.resx">
       <DependentUpon>GetCommand.vb</DependentUpon>
