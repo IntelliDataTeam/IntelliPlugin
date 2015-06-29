@@ -46,7 +46,7 @@ Partial Class DTreeBuilderForm
         Me.Label2 = New System.Windows.Forms.Label()
         Me.Label3 = New System.Windows.Forms.Label()
         Me.GoButton = New System.Windows.Forms.Button()
-        Me.CloseButton = New System.Windows.Forms.Button()
+        Me.Button1 = New System.Windows.Forms.Button()
         Me.SuspendLayout()
         '
         'OptionTextBox
@@ -219,21 +219,22 @@ Partial Class DTreeBuilderForm
         Me.GoButton.Text = "Go!"
         Me.GoButton.UseVisualStyleBackColor = True
         '
-        'CloseButton
+        'Button1
         '
-        Me.CloseButton.Location = New System.Drawing.Point(15, 294)
-        Me.CloseButton.Name = "CloseButton"
-        Me.CloseButton.Size = New System.Drawing.Size(75, 23)
-        Me.CloseButton.TabIndex = 23
-        Me.CloseButton.Text = "Close"
-        Me.CloseButton.UseVisualStyleBackColor = True
+        Me.Button1.DialogResult = System.Windows.Forms.DialogResult.Cancel
+        Me.Button1.Location = New System.Drawing.Point(12, 294)
+        Me.Button1.Name = "Button1"
+        Me.Button1.Size = New System.Drawing.Size(75, 23)
+        Me.Button1.TabIndex = 23
+        Me.Button1.Text = "Done"
+        Me.Button1.UseVisualStyleBackColor = True
         '
         'DTreeBuilderForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(224, 329)
-        Me.Controls.Add(Me.CloseButton)
+        Me.Controls.Add(Me.Button1)
         Me.Controls.Add(Me.GoButton)
         Me.Controls.Add(Me.Label3)
         Me.Controls.Add(Me.Label2)
@@ -259,6 +260,7 @@ Partial Class DTreeBuilderForm
         Me.Controls.Add(Me.OptionTextBox)
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.Name = "DTreeBuilderForm"
+        Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "DTreeBuilder"
         Me.ResumeLayout(False)
         Me.PerformLayout()
@@ -287,5 +289,5 @@ Partial Class DTreeBuilderForm
     Friend WithEvents Label2 As System.Windows.Forms.Label
     Friend WithEvents Label3 As System.Windows.Forms.Label
     Friend WithEvents GoButton As System.Windows.Forms.Button
-    Friend WithEvents CloseButton As System.Windows.Forms.Button
+    Friend WithEvents Button1 As System.Windows.Forms.Button
 End Class

@@ -62,6 +62,25 @@ Public Class Ribbon1
     Private Const xLimit As Integer = 10001
     Private username As String
     Private password As String
+
+    'global variables for DTree Builder
+    Private ColHeaders(6) As String
+    Private RowNum As Integer = 1
+    Private ColNum As Integer = 1
+    Private ColNum_PN As Integer = 1
+    Private Num_PN As Integer = 0
+    Private ColNum_CON As Integer = 1
+    Private ColNum_EX1 As Integer = 1
+    Private ColNum_EX2 As Integer = 1
+    Private ColNum_EX3 As Integer = 1
+    Private ColNum_EX4 As Integer = 1
+    Private ColNum_EX5 As Integer = 1
+    Private ColNum_OUT As Integer = 7
+    Private e_CON, e_EX1, e_EX2, e_EX3, e_EX4, e_EX5
+    Private result_CON, result_EX1, result_EX2, result_EX3, result_EX4, result_EX5
+    '/end
+
+
 #End Region
 
 #Region "My Helpers"
@@ -1443,29 +1462,22 @@ Public Class Ribbon1
 #Region "My Functions V"
 
     '......................................DTreeBuilder...................................................
-    'This function helps you build a DTree.  Solid.
-
-    Public Sub TestFun(ByVal control As Office.IRibbonControl)
+    'This function helps you build a DTree.  Mostly applicable for building Radial Aluminum data. Solid.
+    'Use the first six columns (up to 5 condition columns and 1 PN column) in a given sheet.  Apply option endings
+    'based on user inputted commands.  Output is generated in column G (index 7)
+    '
+    '06/26/2015 first functional version is complete
+    'Wishlist:
+    '   *remove excess comma when "Done" is clicked [DONE]
+    '   *clean up the code??????????
+    '
+    '
+    '
+    Public Sub DTreeBuilder(ByVal control As Office.IRibbonControl)
 
         VariableSetup()
         XlApp.StatusBar = "Shake that Tree!"
         Dim DTreeBuilderForm As New DTreeBuilderForm
-
-        Dim Headers(6) As String
-
-        Dim RowNum As Integer = 1
-        Dim ColNum As Integer = 1
-
-        Dim ColNum_PN As Integer = 1
-        Dim Num_PN As Integer = 0
-
-        Dim ColNum_CON As Integer = 1
-        Dim ColNum_EX1 As Integer = 1
-        Dim ColNum_EX2 As Integer = 1
-        Dim ColNum_EX3 As Integer = 1
-        Dim ColNum_EX4 As Integer = 1
-        Dim ColNum_EX5 As Integer = 1
-        Dim ColNum_OUT As Integer = 7
 
         'scan and store header indices
         Do Until xlWks.Cells(RowNum, ColNum).Value = ""
@@ -1479,7 +1491,7 @@ Public Class Ribbon1
                 ColNum_PN = ColNum
             End If
 
-            Headers(ColNum) = xlWks.Cells(RowNum, ColNum).value
+            ColHeaders(ColNum) = xlWks.Cells(RowNum, ColNum).value
             ColNum = ColNum + 1
 
         Loop
@@ -1496,61 +1508,108 @@ Public Class Ribbon1
         RowNum = 2
         xlWks.Cells(RowNum, ColNum).Select()
 
+        Do While 1
+            DTreeBuilderForm.ShowDialog()
+            If DTreeBuilderForm.DialogResult = DialogResult.OK Then
+                ColNum_CON = Array.IndexOf(ColHeaders, DTreeBuilderForm.ConditionColTexBox.Text)
+                ColNum_EX1 = Array.IndexOf(ColHeaders, DTreeBuilderForm.Exception1ColTextBox.Text)
+                ColNum_EX2 = Array.IndexOf(ColHeaders, DTreeBuilderForm.Exception2ColTextBox.Text)
+                ColNum_EX3 = Array.IndexOf(ColHeaders, DTreeBuilderForm.Exception3ColTextBox.Text)
+                ColNum_EX4 = Array.IndexOf(ColHeaders, DTreeBuilderForm.Exception4ColTextBox.Text)
+                ColNum_EX5 = Array.IndexOf(ColHeaders, DTreeBuilderForm.Exception5ColTextBox.Text)
 
+                Do Until xlWks.Cells(RowNum, ColNum).Value = ""
 
-        'condition checking
-
-        If DTreeBuilderForm.ShowDialog() = DialogResult.OK Then
-            ColNum_CON = Array.IndexOf(Headers, DTreeBuilderForm.ConditionColTexBox.Text)
-            ColNum_EX1 = Array.IndexOf(Headers, DTreeBuilderForm.Exception1ColTextBox.Text)
-            ColNum_EX2 = Array.IndexOf(Headers, "dxl")
-            ColNum_EX3 = Array.IndexOf(Headers, "dxl")
-            ColNum_EX4 = Array.IndexOf(Headers, "dxl")
-            ColNum_EX5 = Array.IndexOf(Headers, "dxl")
-
-            Dim e_CON As New Expression("x" & DTreeBuilderForm.ConditionOprTextBox.Text & DTreeBuilderForm.ConditionValTextBox.Text)
-            Dim e_EX1 As New Expression("x" & DTreeBuilderForm.Exception1OprTextBox.Text & DTreeBuilderForm.Exception1ValTextBox.Text)
-            Dim e_EX2 As New Expression("x = 1340")
-            Dim e_EX3 As New Expression("x = 1330")
-            Dim e_EX4 As New Expression("x = 1330")
-            Dim e_EX5 As New Expression("x = 1330")
-            Dim result_CON, result_EX1, result_EX2, result_EX3, result_EX4, result_EX5
-
-            Do Until xlWks.Cells(RowNum, ColNum).Value = ""
-
-                e_CON.Parameters.Add("x", xlWks.Cells(RowNum, ColNum_CON).Value)
-                e_EX1.Parameters.Add("x", xlWks.Cells(RowNum, ColNum_EX1).Value)
-                e_EX2.Parameters.Add("x", xlWks.Cells(RowNum, ColNum_EX2).Value)
-                e_EX3.Parameters.Add("x", xlWks.Cells(RowNum, ColNum_EX3).Value)
-                e_EX4.Parameters.Add("x", xlWks.Cells(RowNum, ColNum_EX4).Value)
-                e_EX5.Parameters.Add("x", xlWks.Cells(RowNum, ColNum_EX5).Value)
-
-                result_CON = e_CON.Evaluate
-                result_EX1 = e_EX1.Evaluate
-                result_EX2 = e_EX2.Evaluate
-                result_EX3 = e_EX3.Evaluate
-                result_EX4 = e_EX4.Evaluate
-                result_EX5 = e_EX5.Evaluate
-
-                If result_CON Then
-                    If Not result_EX1 And Not result_EX2 And Not result_EX3 And Not result_EX4 And Not result_EX5 Then
-                        xlWks.Cells(RowNum, ColNum_OUT).Value = xlWks.Cells(RowNum, ColNum_OUT).Value & DTreeBuilderForm.OptionTextBox.Text & ","
+                    If DTreeBuilderForm.ConditionColTexBox.Text = "" Or ColNum_CON = -1 Then 'if condition is left blank, assume always true
+                        e_CON = New Expression("1 < 2")
+                    Else
+                        e_CON = New Expression("x" & DTreeBuilderForm.ConditionOprTextBox.Text & DTreeBuilderForm.ConditionValTextBox.Text)
+                        e_CON.Parameters.Add("x", xlWks.Cells(RowNum, ColNum_CON).Value)
                     End If
-                End If
 
-                e_CON.Parameters.Clear()
-                e_EX1.Parameters.Clear()
-                e_EX2.Parameters.Clear()
-                e_EX3.Parameters.Clear()
-                e_EX4.Parameters.Clear()
-                e_EX5.Parameters.Clear()
+                    If DTreeBuilderForm.Exception1ColTextBox.Text = "" Then ' if exception1 is left blank, assume always false
+                        e_EX1 = New Expression("1 > 2")
+                    Else
+                        e_EX1 = New Expression("x" & DTreeBuilderForm.Exception1OprTextBox.Text & DTreeBuilderForm.Exception1ValTextBox.Text)
+                        e_EX1.Parameters.Add("x", xlWks.Cells(RowNum, ColNum_EX1).Value)
+                    End If
 
-                RowNum = RowNum + 1
+                    If DTreeBuilderForm.Exception2ColTextBox.Text = "" Then ' if exception2 is left blank, assume always false
+                        e_EX2 = New Expression("1 > 2")
+                    Else
+                        e_EX2 = New Expression("x" & DTreeBuilderForm.Exception2OprTextBox.Text & DTreeBuilderForm.Exception2ValTextBox.Text)
+                        e_EX2.Parameters.Add("x", xlWks.Cells(RowNum, ColNum_EX2).Value)
+                    End If
 
-            Loop
+                    If DTreeBuilderForm.Exception3ColTextBox.Text = "" Then ' if exception3 is left blank, assume always false
+                        e_EX3 = New Expression("1 > 2")
+                    Else
+                        e_EX3 = New Expression("x" & DTreeBuilderForm.Exception3OprTextBox.Text & DTreeBuilderForm.Exception3ValTextBox.Text)
+                        e_EX3.Parameters.Add("x", xlWks.Cells(RowNum, ColNum_EX3).Value)
+                    End If
 
-        End If
+                    If DTreeBuilderForm.Exception4ColTextBox.Text = "" Then ' if exception4 is left blank, assume always false
+                        e_EX4 = New Expression("1 > 2")
+                    Else
+                        e_EX4 = New Expression("x" & DTreeBuilderForm.Exception4OprTextBox.Text & DTreeBuilderForm.Exception4ValTextBox.Text)
+                        e_EX4.Parameters.Add("x", xlWks.Cells(RowNum, ColNum_EX4).Value)
+                    End If
 
+                    If DTreeBuilderForm.Exception5ColTextBox.Text = "" Then ' if exception5 is left blank, assume always false
+                        e_EX5 = New Expression("1 > 2")
+                    Else
+                        e_EX5 = New Expression("x" & DTreeBuilderForm.Exception5OprTextBox.Text & DTreeBuilderForm.Exception5ValTextBox.Text)
+                        e_EX5.Parameters.Add("x", xlWks.Cells(RowNum, ColNum_EX5).Value)
+                    End If
+
+                    result_CON = e_CON.Evaluate
+                    result_EX1 = e_EX1.Evaluate
+                    result_EX2 = e_EX2.Evaluate
+                    result_EX3 = e_EX3.Evaluate
+                    result_EX4 = e_EX4.Evaluate
+                    result_EX5 = e_EX5.Evaluate
+
+                    If result_CON Then
+                        If Not result_EX1 And Not result_EX2 And Not result_EX3 And Not result_EX4 And Not result_EX5 Then
+                            xlWks.Cells(RowNum, ColNum_OUT).Value = xlWks.Cells(RowNum, ColNum_OUT).Value & DTreeBuilderForm.OptionTextBox.Text & ","
+                        End If
+                    End If
+
+                    e_CON.Parameters.Clear()
+                    e_EX1.Parameters.Clear()
+                    e_EX2.Parameters.Clear()
+                    e_EX3.Parameters.Clear()
+                    e_EX4.Parameters.Clear()
+                    e_EX5.Parameters.Clear()
+
+                    RowNum = RowNum + 1
+
+                Loop
+
+                RowNum = 2
+
+            End If
+
+            'when "done" button is clicked, remove extraneous commas from ends
+            If DTreeBuilderForm.DialogResult = DialogResult.Cancel Then
+                ColNum = ColNum_OUT
+                RowNum = 2
+
+                Dim foo As String
+                Do Until xlWks.Cells(RowNum, ColNum_PN).Value = ""
+                    foo = xlWks.Cells(RowNum, ColNum).value
+                    If foo <> "" Then
+                        foo = foo.Substring(0, foo.Length - 1)
+                        xlWks.Cells(RowNum, ColNum).value = foo
+                    End If
+                    RowNum = RowNum + 1
+                Loop
+
+                DTreeBuilderForm.Close()
+                Exit Do
+            End If
+
+        Loop
 
     End Sub
 

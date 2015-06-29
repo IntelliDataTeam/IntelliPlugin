@@ -6,7 +6,20 @@ IntelliExcelAddin
 </name>
 </assembly>
 <members>
-<member name="M:IntelliExcelAddin.ThisAddIn.#ctor(Microsoft.Office.Tools.Excel.ApplicationFactory,System.IServiceProvider)">
+<member name="P:IntelliExcelAddin.My.Resources.Resources.ResourceManager">
+	<summary>
+  Returns the cached ResourceManager instance used by this class.
+</summary>
+</member><member name="P:IntelliExcelAddin.My.Resources.Resources.Culture">
+	<summary>
+  Overrides the current thread's CurrentUICulture property for all
+  resource lookups using this strongly typed resource class.
+</summary>
+</member><member name="T:IntelliExcelAddin.My.Resources.Resources">
+	<summary>
+  A strongly-typed resource class, for looking up localized strings, etc.
+</summary>
+</member><member name="M:IntelliExcelAddin.ThisAddIn.#ctor(Microsoft.Office.Tools.Excel.ApplicationFactory,System.IServiceProvider)">
 </member><member name="M:IntelliExcelAddin.ThisAddIn.Initialize">
 </member><member name="M:IntelliExcelAddin.ThisAddIn.FinishInitialization">
 </member><member name="M:IntelliExcelAddin.ThisAddIn.InitializeDataBindings">
@@ -27,19 +40,6 @@ IntelliExcelAddin
 </member><member name="T:IntelliExcelAddin.Globals">
 </member><member name="M:IntelliExcelAddin.ThisRibbonCollection.#ctor(Microsoft.Office.Tools.Ribbon.RibbonFactory)">
 </member><member name="T:IntelliExcelAddin.ThisRibbonCollection">
-</member><member name="P:IntelliExcelAddin.My.Resources.Resources.ResourceManager">
-	<summary>
-  Returns the cached ResourceManager instance used by this class.
-</summary>
-</member><member name="P:IntelliExcelAddin.My.Resources.Resources.Culture">
-	<summary>
-  Overrides the current thread's CurrentUICulture property for all
-  resource lookups using this strongly typed resource class.
-</summary>
-</member><member name="T:IntelliExcelAddin.My.Resources.Resources">
-	<summary>
-  A strongly-typed resource class, for looking up localized strings, etc.
-</summary>
 </member>
 </members>
 </doc>
