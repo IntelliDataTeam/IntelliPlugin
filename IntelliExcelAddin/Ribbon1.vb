@@ -22,6 +22,7 @@ Imports System.Windows.Forms
 Imports System.IO
 Imports MySql.Data.MySqlClient
 Imports NCalc
+Imports System.Drawing
 
 <Runtime.InteropServices.ComVisible(True)> _
 Public Class Ribbon1
@@ -146,7 +147,7 @@ Public Class Ribbon1
                 cmdStr += " ORDER BY " & ord
             End If
         End If
-        Return cmdstr
+        Return cmdStr
     End Function
 
     Private Sub Export2Sheet(pForm As ValForm, row As Integer, limit As Integer)
@@ -1484,7 +1485,7 @@ Public Class Ribbon1
 
             If ColNum > 6 Then
                 MsgBox("Too many columns!")
-                Exit Do
+                Exit Sub
             End If
 
             If xlWks.Cells(RowNum, ColNum).value = "PN" Then
@@ -1520,8 +1521,10 @@ Public Class Ribbon1
 
                 Do Until xlWks.Cells(RowNum, ColNum).Value = ""
 
-                    If DTreeBuilderForm.ConditionColTexBox.Text = "" Or ColNum_CON = -1 Then 'if condition is left blank, assume always true
+                    If DTreeBuilderForm.ConditionColTexBox.Text = "" Then 'if condition is blank, assume always true
                         e_CON = New Expression("1 < 2")
+                    ElseIf ColNum_CON = -1 Then 'if condition is not a valid column, assume always false
+                        e_CON = New Expression("2 > 1")
                     Else
                         e_CON = New Expression("x" & DTreeBuilderForm.ConditionOprTextBox.Text & DTreeBuilderForm.ConditionValTextBox.Text)
                         e_CON.Parameters.Add("x", xlWks.Cells(RowNum, ColNum_CON).Value)
@@ -1529,6 +1532,8 @@ Public Class Ribbon1
 
                     If DTreeBuilderForm.Exception1ColTextBox.Text = "" Then ' if exception1 is left blank, assume always false
                         e_EX1 = New Expression("1 > 2")
+                    ElseIf ColNum_EX1 = -1 Then
+                        e_EX1 = New Expression("2 > 1")
                     Else
                         e_EX1 = New Expression("x" & DTreeBuilderForm.Exception1OprTextBox.Text & DTreeBuilderForm.Exception1ValTextBox.Text)
                         e_EX1.Parameters.Add("x", xlWks.Cells(RowNum, ColNum_EX1).Value)
@@ -1536,6 +1541,8 @@ Public Class Ribbon1
 
                     If DTreeBuilderForm.Exception2ColTextBox.Text = "" Then ' if exception2 is left blank, assume always false
                         e_EX2 = New Expression("1 > 2")
+                    ElseIf ColNum_EX2 = -1 Then
+                        e_EX2 = New Expression("2 > 1")
                     Else
                         e_EX2 = New Expression("x" & DTreeBuilderForm.Exception2OprTextBox.Text & DTreeBuilderForm.Exception2ValTextBox.Text)
                         e_EX2.Parameters.Add("x", xlWks.Cells(RowNum, ColNum_EX2).Value)
@@ -1543,6 +1550,8 @@ Public Class Ribbon1
 
                     If DTreeBuilderForm.Exception3ColTextBox.Text = "" Then ' if exception3 is left blank, assume always false
                         e_EX3 = New Expression("1 > 2")
+                    ElseIf ColNum_EX3 = -1 Then
+                        e_EX3 = New Expression("2 > 1")
                     Else
                         e_EX3 = New Expression("x" & DTreeBuilderForm.Exception3OprTextBox.Text & DTreeBuilderForm.Exception3ValTextBox.Text)
                         e_EX3.Parameters.Add("x", xlWks.Cells(RowNum, ColNum_EX3).Value)
@@ -1550,6 +1559,8 @@ Public Class Ribbon1
 
                     If DTreeBuilderForm.Exception4ColTextBox.Text = "" Then ' if exception4 is left blank, assume always false
                         e_EX4 = New Expression("1 > 2")
+                    ElseIf ColNum_EX4 = -1 Then
+                        e_EX4 = New Expression("2 > 1")
                     Else
                         e_EX4 = New Expression("x" & DTreeBuilderForm.Exception4OprTextBox.Text & DTreeBuilderForm.Exception4ValTextBox.Text)
                         e_EX4.Parameters.Add("x", xlWks.Cells(RowNum, ColNum_EX4).Value)
@@ -1557,6 +1568,8 @@ Public Class Ribbon1
 
                     If DTreeBuilderForm.Exception5ColTextBox.Text = "" Then ' if exception5 is left blank, assume always false
                         e_EX5 = New Expression("1 > 2")
+                    ElseIf ColNum_EX5 = -1 Then
+                        e_EX5 = New Expression("2 > 1")
                     Else
                         e_EX5 = New Expression("x" & DTreeBuilderForm.Exception5OprTextBox.Text & DTreeBuilderForm.Exception5ValTextBox.Text)
                         e_EX5.Parameters.Add("x", xlWks.Cells(RowNum, ColNum_EX5).Value)
@@ -1612,6 +1625,70 @@ Public Class Ribbon1
         Loop
 
     End Sub
+
+    '......................................ColorSeries...................................................
+    'ColorSeries finds your series column and highlights series breaks with alternate colors.  
+    'Highly useful for visual tracking.  Applicable for users who are visual processors.
+    '
+    '
+    '
+
+    Public Sub ColorSeries(ByVal control As Office.IRibbonControl)
+        VariableSetup()
+
+        XlApp.ScreenUpdating = True 'Set to 'False' to increase performance
+        XlApp.Calculation = XlCalculation.xlCalculationManual 'Set to 'Manual' to increase performance
+        XlApp.EnableEvents = False 'Set to 'False' to increase performance
+        XlApp.DisplayStatusBar = True
+
+        RowNum = 1
+        ColNum = 1
+
+        'find the series column
+        Do Until xlWks.Cells(RowNum, ColNum).Value = ""
+            If xlWks.Cells(RowNum, ColNum).value = "Series" Then
+                Exit Do
+            End If
+            ColNum = ColNum + 1
+        Loop
+
+        If xlWks.Cells(RowNum, ColNum).Value = "" Then
+            MsgBox("Series column not found")
+            Exit Sub
+        End If
+
+        'color the column
+        RowNum = 2
+        Dim foo As Boolean
+        foo = True
+
+        Do Until xlWks.Cells(RowNum, ColNum).Value = ""
+
+            If foo Then
+                'set cell to blue
+                xlWks.Cells(RowNum, ColNum).interior.color = 15773696
+
+            Else
+                'set cell to yellow
+                xlWks.Cells(RowNum, ColNum).interior.color = 65535
+            End If
+
+
+            If xlWks.Cells(RowNum + 1, ColNum).Value <> xlWks.Cells(RowNum, ColNum).Value Then
+                foo = Not foo
+            End If
+
+            RowNum = RowNum + 1
+
+        Loop
+
+        XlApp.ScreenUpdating = True
+        XlApp.Calculation = XlCalculation.xlCalculationAutomatic
+        XlApp.EnableEvents = True
+        XlApp.DisplayStatusBar = True
+
+    End Sub
+
 
 #End Region
 
