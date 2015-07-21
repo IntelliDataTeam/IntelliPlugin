@@ -41,11 +41,11 @@ Partial Class PullDownForm
         'Label2
         '
         Me.Label2.AutoSize = True
-        Me.Label2.Location = New System.Drawing.Point(29, 64)
+        Me.Label2.Location = New System.Drawing.Point(70, 64)
         Me.Label2.Name = "Label2"
-        Me.Label2.Size = New System.Drawing.Size(86, 13)
+        Me.Label2.Size = New System.Drawing.Size(50, 13)
         Me.Label2.TabIndex = 0
-        Me.Label2.Text = "Number of Rows"
+        Me.Label2.Text = "# of Calc"
         '
         'p_range
         '

@@ -57,8 +57,7 @@ Public Class Ribbon1
     Private tLen As Integer
     Private XlApp As Excel.Application
     Private Const limit As Integer = 5000 'The number of operations that Population and Validator will do per batch
-    'Private Const xLimit As Integer = 1048576
-    Private Const xLimit As Integer = 10001
+    Private Const xLimit As Integer = 1048576
     Private username As String
     Private password As String
 #End Region
@@ -1403,7 +1402,7 @@ Public Class Ribbon1
         concatForm.Close()
     End Sub
 
-    Public Sub PullDown(ByVal control As Office.IRibbonControl)
+    Public Sub PullDown_backup(ByVal control As Office.IRibbonControl)
         VariableSetup()
         XlApp.Calculation = XlCalculation.xlCalculationManual 'Set to 'Manual' to increase performance
         Dim p_form As New PullDownForm
@@ -1430,6 +1429,82 @@ Public Class Ribbon1
         End If
         p_form.Close()
         XlApp.Calculation = XlCalculation.xlCalculationAutomatic
+    End Sub
+
+    Public Sub PullDown(ByVal control As Office.IRibbonControl)
+        ' And it begins...
+        VariableSetup()
+        '......................................Configurations.............................................
+        Dim row As Integer = 3 'Which row in "Export" will the data start pasting from
+        XlApp.ScreenUpdating = True 'Set to 'False' to increase performance
+        XlApp.Calculation = XlCalculation.xlCalculationManual 'Set to 'Manual' to increase performance
+        XlApp.EnableEvents = False 'Set to 'False' to increase performance
+        XlApp.DisplayStatusBar = True
+        '...................................../Configurations.............................................
+
+        Dim p_form As New PullDownForm
+
+        p_form.ShowDialog()
+
+        If p_form.DialogResult = DialogResult.OK Then
+            Dim column As String = p_form.p_range.Text
+            Dim lim As Integer = p_form.p_limit.Text
+            p_form.Close()
+
+            Dim start_col As String = Nothing
+            Dim end_col As String = Nothing
+            Dim temp As String() = column.Split(New Char() {":"c})
+            Dim flag As Boolean = True
+
+            For Each x In temp(0)
+                If IsNumeric(x) = False Then
+                    start_col += x
+                End If
+            Next
+            For Each x In temp(1)
+                If IsNumeric(x) = False Then
+                    end_col += x
+                End If
+            Next
+
+            Dim n As Integer = xlWks.Cells.Find("*", SearchOrder:=XlSearchOrder.xlByRows, SearchDirection:=XlSearchDirection.xlPrevious).Row
+
+            If (lim > n) Then
+                lim = n
+            End If
+
+            While row < n
+                'Make sure that the while loop will only go up to the last row
+                If row + lim > n Then
+                    lim = row + lim - n
+                End If
+                If flag Then
+                    'Drag the formula from row 2 to start only at the beginning
+                    xlWks.Range(start_col & "2:" & end_col & row).FillDown()
+                    flag = False
+                End If
+
+                'Drag the formulas down
+                xlWks.Range(start_col & row & ":" & end_col & row + lim).FillDown()
+
+                'Calculate the formulas
+                xlWks.Range(start_col & row & ":" & end_col & row + lim).Calculate()
+
+                'Convert the formulas into values
+                xlWks.Range(start_col & row & ":" & end_col & row + lim - 1).Value = xlWks.Range(start_col & row & ":" & end_col & row + lim - 1).Value
+
+                'Move onto the next iteration
+                row += lim
+            End While
+
+        End If
+
+        'Clean up
+
+        XlApp.ScreenUpdating = True
+        XlApp.Calculation = XlCalculation.xlCalculationAutomatic
+        XlApp.EnableEvents = True
+        XlApp.DisplayStatusBar = True
     End Sub
 #End Region
 
