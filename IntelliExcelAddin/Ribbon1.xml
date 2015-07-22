@@ -48,10 +48,12 @@
         </group>
         
         <group id="Vincent" label="More Fun Stuffs">
-          <button id="dtree" label="DTree Builder" imageMso="HappyFace" size="large"
+          <button id="dtree" label="DTree Builder" imageMso="PivotDiagramAlignCenter" size="large"
                   onAction="DTreeBuilder"/>
-          <button id="colcolor" label="Color Series" imageMso="HappyFace" size="large"
+          <button id="colcolor" label="Color Series" imageMso="PictureFormatDialog" size="large"
                   onAction="ColorSeries"/>
+          <button id="tabletrans" label="Table Transfiguration" imageMso="HappyFace" size="large"
+                  onAction="TableTransfiguration"/>
         </group>
         
       </tab>

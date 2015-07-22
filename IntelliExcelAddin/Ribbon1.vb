@@ -1636,7 +1636,7 @@ Public Class Ribbon1
     Public Sub ColorSeries(ByVal control As Office.IRibbonControl)
         VariableSetup()
 
-        XlApp.ScreenUpdating = True 'Set to 'False' to increase performance
+        XlApp.ScreenUpdating = False 'Set to 'False' to increase performance
         XlApp.Calculation = XlCalculation.xlCalculationManual 'Set to 'Manual' to increase performance
         XlApp.EnableEvents = False 'Set to 'False' to increase performance
         XlApp.DisplayStatusBar = True
@@ -1654,6 +1654,10 @@ Public Class Ribbon1
 
         If xlWks.Cells(RowNum, ColNum).Value = "" Then
             MsgBox("Series column not found")
+            XlApp.ScreenUpdating = True
+            XlApp.Calculation = XlCalculation.xlCalculationAutomatic
+            XlApp.EnableEvents = True
+            XlApp.DisplayStatusBar = True
             Exit Sub
         End If
 
@@ -1688,6 +1692,153 @@ Public Class Ribbon1
         XlApp.DisplayStatusBar = True
 
     End Sub
+
+
+
+    '......................................TableTransfiguration...................................................
+    'TableTransfiguration takes "waterfall" tables and rearranges them into
+    'a more database friendly format.
+    '
+    '
+    '
+
+    Public Sub TableTransfiguration(ByVal control As Office.IRibbonControl)
+
+        VariableSetup()
+
+        XlApp.ScreenUpdating = True 'Set to 'False' to increase performance
+        XlApp.Calculation = XlCalculation.xlCalculationAutomatic 'Set to 'Manual' to increase performance
+        XlApp.EnableEvents = True 'Set to 'False' to increase performance
+        XlApp.DisplayStatusBar = True
+
+        Dim cap_row As Integer 'number of capacitance rows
+        Dim vol_col As Integer 'number of voltage headings
+        Dim col_inc As Integer 'number of columns per voltage heading
+        Dim counter As Integer
+        Dim counter2 As Integer
+        Dim counter3 As Integer
+
+        cap_row = 0
+        vol_col = 0
+        col_inc = 0
+        counter = 0
+        counter2 = 0
+        counter3 = 0
+
+        xlWks.Copy(Before:=xlWkb.Sheets(xlWks.Name))
+
+        RowNum = XlApp.ActiveCell.Row
+        ColNum = XlApp.ActiveCell.Column
+
+        'determine cap_row
+        Do Until IsNothing(xlWks.Cells(RowNum, ColNum).Value)
+            cap_row = cap_row + 1
+            RowNum = RowNum + 1
+        Loop
+        RowNum = RowNum - cap_row - 1
+
+        'determine col_inc
+        ColNum = ColNum + 1
+        col_inc = 1
+
+        Do Until xlWks.Cells(RowNum, ColNum + 1).value IsNot Nothing
+            col_inc = col_inc + 1
+            ColNum = ColNum + 1
+        Loop
+
+        'determine vol_col
+        ColNum = ColNum - (col_inc - 1)
+        Do Until IsNothing(xlWks.Cells(RowNum, ColNum).value)
+            vol_col = vol_col + 1
+            ColNum = ColNum + col_inc
+        Loop
+
+        'GENERATE CAPACITANCE, VOLTAGE, AND SERIES COLUMNS
+        'use dimensions to generate and fill columns
+        RowNum = RowNum + cap_row + 1
+        ColNum = ColNum - (vol_col * col_inc) - 1
+
+        'insert blank rows below table
+        xlWks.Rows(RowNum).Resize(cap_row * (vol_col - 1)).insert()
+        RowNum = RowNum - cap_row
+        ColNum = ColNum - 1
+
+        'voltage column
+        Do While counter < (vol_col * col_inc)
+            xlWks.Cells(RowNum + (cap_row * counter), ColNum).Value = xlWks.Cells(RowNum - 1, ColNum + 2 + (col_inc * counter)).Value
+
+            counter2 = 1
+            Do While counter2 < cap_row
+                xlWks.Cells(RowNum + (cap_row * counter) + counter2, ColNum).Value = xlWks.Cells(RowNum + (cap_row * counter), ColNum).Value
+                counter2 = counter2 + 1
+            Loop
+
+            counter = counter + 1
+
+        Loop
+
+        'capacitance column
+        ColNum = ColNum + 1
+        counter = 0
+
+
+        Do While counter < cap_row
+            counter2 = 1
+            Do While counter2 < vol_col
+                xlWks.Cells((RowNum + counter) + (cap_row * counter2), ColNum).Value = xlWks.Cells(RowNum + counter, ColNum).Value
+                counter2 = counter2 + 1
+            Loop
+            counter = counter + 1
+        Loop
+
+        'series column
+        ColNum = ColNum - 2
+        counter = 1
+        Do While counter < (cap_row * vol_col)
+            xlWks.Cells(RowNum + counter, ColNum).Value = xlWks.Cells(RowNum, ColNum).Value
+            counter = counter + 1
+        Loop
+
+        'TRANSPOSE BASE TABLE
+        ColNum = ColNum + 3
+        counter3 = 0
+        Do While counter3 < col_inc
+            counter = 0
+            Do While counter < cap_row
+                counter2 = 1
+                Do While counter2 < vol_col
+                    xlWks.Cells((RowNum + counter) + (cap_row * counter2), ColNum + counter3).Value = xlWks.Cells(RowNum + counter, ColNum + (counter2 * col_inc) + counter3).Value
+                    xlWks.Cells(RowNum + counter, ColNum + (counter2 * col_inc) + counter3).Value = ""
+                    counter2 = counter2 + 1
+                Loop
+                counter = counter + 1
+            Loop
+            counter3 = counter3 + 1
+        Loop
+
+        'erase voltage header
+        RowNum = RowNum - 1
+        xlWks.Rows(RowNum).Delete()
+
+        'delete blank rows
+        counter = 0
+        Do While counter < (cap_row * vol_col)
+            If IsNothing(xlWks.Cells(RowNum, ColNum).Value) Then
+                xlWks.Rows(RowNum).Delete()
+            End If
+            counter = counter + 1
+        Loop
+
+        xlWkb.Worksheets(xlWks.Index).Activate()
+        MsgBox("the end")
+
+        XlApp.ScreenUpdating = True
+        XlApp.Calculation = XlCalculation.xlCalculationAutomatic
+        XlApp.EnableEvents = True
+        XlApp.DisplayStatusBar = True
+
+    End Sub
+
 
 
 #End Region
