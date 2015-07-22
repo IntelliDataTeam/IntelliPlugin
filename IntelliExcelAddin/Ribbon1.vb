@@ -1709,7 +1709,7 @@ Public Class Ribbon1
         XlApp.ScreenUpdating = False 'Set to 'False' to increase performance
         XlApp.Calculation = XlCalculation.xlCalculationManual 'Set to 'Manual' to increase performance
         XlApp.EnableEvents = False 'Set to 'False' to increase performance
-        XlApp.DisplayStatusBar = True
+        XlApp.DisplayStatusBar = False
 
         Dim cap_row As Integer 'number of capacitance rows
         Dim vol_col As Integer 'number of voltage headings
@@ -1726,6 +1726,7 @@ Public Class Ribbon1
         counter3 = 0
 
         xlWks.Copy(Before:=xlWkb.Sheets(xlWks.Name))
+        xlWkb.Worksheets(xlWks.Index).Activate()
 
         RowNum = XlApp.ActiveCell.Row
         ColNum = XlApp.ActiveCell.Column
@@ -1822,20 +1823,17 @@ Public Class Ribbon1
 
         'delete blank rows
         counter = 0
-        counter2 = 0
         Do While counter < (cap_row * vol_col)
             If IsNothing(xlWks.Cells(RowNum, ColNum).Value) Then
+                counter = counter + 1
                 xlWks.Rows(RowNum).Delete()
             Else
                 Do Until IsNothing(xlWks.Cells(RowNum, ColNum).Value)
                     RowNum = RowNum + 1
-                    counter2 = counter2 + 1
+                    counter = counter + 1
                 Loop
             End If
-            counter = counter + 1
         Loop
-
-        xlWkb.Worksheets(xlWks.Index).Activate()
 
         XlApp.ScreenUpdating = True
         XlApp.Calculation = XlCalculation.xlCalculationAutomatic
