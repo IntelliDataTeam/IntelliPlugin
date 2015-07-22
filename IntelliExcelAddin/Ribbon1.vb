@@ -1794,6 +1794,7 @@ Public Class Ribbon1
         'series column
         ColNum = ColNum - 2
         counter = 1
+        MsgBox(cap_row * vol_col)
         Do While counter < (cap_row * vol_col)
             xlWks.Cells(RowNum + counter, ColNum).Value = xlWks.Cells(RowNum, ColNum).Value
             counter = counter + 1
@@ -1822,9 +1823,15 @@ Public Class Ribbon1
 
         'delete blank rows
         counter = 0
+        counter2 = 0
         Do While counter < (cap_row * vol_col)
             If IsNothing(xlWks.Cells(RowNum, ColNum).Value) Then
                 xlWks.Rows(RowNum).Delete()
+            Else
+                Do Until IsNothing(xlWks.Cells(RowNum, ColNum).Value)
+                    RowNum = RowNum + 1
+                    counter2 = counter2 + 1
+                Loop
             End If
             counter = counter + 1
         Loop
