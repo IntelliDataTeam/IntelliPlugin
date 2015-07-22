@@ -52,7 +52,7 @@
                   onAction="DTreeBuilder"/>
           <button id="colcolor" label="Color Series" imageMso="PictureFormatDialog" size="large"
                   onAction="ColorSeries"/>
-          <button id="tabletrans" label="Table Transfiguration" imageMso="HappyFace" size="large"
+          <button id="tabletrans" label="Table Transfiguration" imageMso="TablesMore" size="large"
                   onAction="TableTransfiguration"/>
         </group>
         

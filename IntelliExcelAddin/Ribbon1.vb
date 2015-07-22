@@ -1706,9 +1706,9 @@ Public Class Ribbon1
 
         VariableSetup()
 
-        XlApp.ScreenUpdating = True 'Set to 'False' to increase performance
-        XlApp.Calculation = XlCalculation.xlCalculationAutomatic 'Set to 'Manual' to increase performance
-        XlApp.EnableEvents = True 'Set to 'False' to increase performance
+        XlApp.ScreenUpdating = False 'Set to 'False' to increase performance
+        XlApp.Calculation = XlCalculation.xlCalculationManual 'Set to 'Manual' to increase performance
+        XlApp.EnableEvents = False 'Set to 'False' to increase performance
         XlApp.DisplayStatusBar = True
 
         Dim cap_row As Integer 'number of capacitance rows
@@ -1794,7 +1794,6 @@ Public Class Ribbon1
         'series column
         ColNum = ColNum - 2
         counter = 1
-        MsgBox(cap_row * vol_col)
         Do While counter < (cap_row * vol_col)
             xlWks.Cells(RowNum + counter, ColNum).Value = xlWks.Cells(RowNum, ColNum).Value
             counter = counter + 1
@@ -1837,7 +1836,6 @@ Public Class Ribbon1
         Loop
 
         xlWkb.Worksheets(xlWks.Index).Activate()
-        MsgBox("the end")
 
         XlApp.ScreenUpdating = True
         XlApp.Calculation = XlCalculation.xlCalculationAutomatic
