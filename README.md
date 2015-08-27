@@ -2,13 +2,14 @@
 An Excel plugin written in VB.NET to assist the Data team in their data building process.
 
 <h1>Goals</h1>
--Add 'pick up where you left off' capability to Population and Validation <br/>
+-<h3>Add 'pick up where you left off' capability to Population and Validation</h2> <br/>
 ---Able to check to what point was the csv read up to and continue the process from there <br/>
--Add 'Stop Process' capability to Population and Validation <br/>
+-<h3>Add 'Stop Process' capability to Population and Validation</h3> <br/>
 ---Currently can't stop the process without completely kill 'Excel' process via Task Manager <br/>
--Possibly revisit Validation and Population's write-to-file <br/>
+-<h3>Possibly revisit Validation and Population's write-to-file</h3> <br/>
 ---Currently store all of the data in memory via stringbuilder, then write all at once to file <br/>
 ---Keeping everything in memory might cause problem as it hogged resources and more prone to errors <br/>
+-<h3>Clean up installer file (reduce the amount of files that are in it)</h3> <br/> <br/>
 
 |06/10/2015|
 |----------|
