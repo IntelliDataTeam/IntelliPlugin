@@ -11,6 +11,8 @@ An Excel plugin written in VB.NET to assist the Data team in their data building
 ---Keeping everything in memory might cause problem as it hogged resources and more prone to errors <br/>
 -<h3>Clean up installer file (reduce the amount of files that are in it)</h3> <br/> <br/>
 
+<h1>Performance History</h1>
+
 |06/10/2015|
 |----------|
 |<b>Population - Performance</b>|
